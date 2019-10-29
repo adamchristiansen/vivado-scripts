@@ -1,0 +1,6 @@
+# Vivado
+*.jou
+*.log
+
+# vivado-scripts
+vivado-scripts.json
