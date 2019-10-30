@@ -77,7 +77,8 @@ The configuration file may contain the following:
   "repo_path": ".",
   "xpr_path": "proj/{project_name}.xpr",
   "vivado_path": "/opt/Xilinx/Vivado/{vivado_version}/bin/vivado",
-  "vivado_version": "2019.1"
+  "vivado_version": "2019.1",
+  "zip_path": "{repo_path}/release/{project_name}.zip"
 }
 ```
 
@@ -89,7 +90,8 @@ The above is for Linux. On Windows it will look more like:
   "repo_path": ".",
   "xpr_path": "proj/{project_name}.xpr",
   "vivado_path": "C:/Xilinx/Vivado/{vivado_version}/bin/vivado",
-  "vivado_version": "2019.1"
+  "vivado_version": "2019.1",
+  "zip_path": "{repo_path}/release/{project_name}.zip"
 }
 ```
 
@@ -101,7 +103,9 @@ that the parameters are interpolated. Therefore, nested interpolation should
 not be relied on.
 
 It is recommended to have at least the `vivado_path` and `vivado_version`
-stored external to the project.
+stored external to the project. For most projects, it is likely that the
+project local `vivado-scripts.json` only needs to define the project name,
+which should be the same as the project name selected in Vivado.
 
 ## Repository Structure
 

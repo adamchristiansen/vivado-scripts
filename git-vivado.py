@@ -34,6 +34,7 @@ CONFIG_REQUIRED = [
     "xpr_path",
     "vivado_path",
     "vivado_version",
+    "zip_path"
 ]
 
 # The encoding for subprocess communication.
@@ -106,9 +107,8 @@ def default_handler(args):
     The default argument handler. This prints some information about the
     program.
     """
-    for k, v in zip(args._fields, args):
-        if not callable(v):
-            print(f"{k}: {v}")
+    for k, v in read_config().items():
+        print(f"{k}: {v}")
 
 def vivado_tcl(script_name, exit_code):
     """
@@ -186,7 +186,7 @@ def parse_args():
     DEFAULT_VIVADO_PATH = c["vivado_path"]
     DEFAULT_VIVADO_VERSION = c["vivado_version"]
     DEFAULT_XPR_PATH = c["xpr_path"]
-    DEFAULT_ZIP_PATH = os.path.join(c["repo_path"], f"{PROJECT_NAME}.zip")
+    DEFAULT_ZIP_PATH = c["zip_path"]
     # Create a parser
     p = argparse.ArgumentParser(
         description="Handles Vivado project git repository operations")
