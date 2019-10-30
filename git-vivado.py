@@ -60,6 +60,7 @@ def read_config():
             xdg_config_home = os.path.join(os.environ["HOME"], ".config")
         load_file(xdg_config_home, "vivado-scripts", CONFIG_FILENAME)
         load_file(xdg_config_home, CONFIG_FILENAME)
+        load_file(os.environ["HOME"], ".vivado-scripts", CONFIG_FILENAME)
         load_file(os.environ["HOME"], "." + CONFIG_FILENAME)
         load_file(CONFIG_FILENAME)
     elif PLATFORM == "windows":

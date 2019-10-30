@@ -58,6 +58,7 @@ On Linux, the order is:
 
 - `$XDG_CONFIG_HOME/vivado-scripts/vivado-scripts.json`
 - `$XDG_CONFIG_HOME/vivado-scripts.json`
+- `$HOME/.vivado-scripts/vivado-scripts.json`
 - `$HOME/.vivado-scripts.json`
 - `./vivado-scripts.json`
 
@@ -66,6 +67,7 @@ If `$XDG_CONFIG_HOME` is not defined, then `$HOME/.config` will be used.
 On Windows, the order is:
 
 - `%APPDATA/vivado-scripts/vivado-scripts/config/vivado-scripts.json`
+- `./vivado-scripts.json`
 
 The configuration file may contain the following:
 
@@ -90,6 +92,13 @@ The above is for Linux. On Windows it will look more like:
   "vivado_version": "2019.1"
 }
 ```
+
+The configs support interpolation of other parameters using the `{...}` syntax.
+Note that nested interpolation is undefined behaviour. Suppose `xpr_path`
+interpolates `project_name` (like the above example), and `project_name`
+interpolates `vivado_version`, this may or may not work depending on the order
+that the parameters are interpolated. Therefore, nested interpolation should
+not be relied on.
 
 It is recommended to have at least the `vivado_path` and `vivado_version`
 stored external to the project.
