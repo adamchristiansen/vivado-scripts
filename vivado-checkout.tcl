@@ -1,13 +1,50 @@
+# Note: argument order does not matter when setting argv; all arguments are optional
+# Usage (No Defaults):
+#   set argv "-r <repo_path> -x <xpr_path> -v <vivado_version> -w <workspace>"
+#   source digilent_vivado_checkout.tcl
+# Usage (All Defaults):
+#   set argv ""
+#   source digilent_vivado_checkout.tcl
 # TODO: handle SDK projects.
+# TODO: add debug flag for argument checking
 
-foreach arg $argv {
-    puts $arg
+# Handle repo_path argument
+set idx [lsearch ${argv} "-r"]
+if {${idx} != -1} {
+    set repo_path [glob -nocomplain [file normalize [lindex ${argv} [expr {${idx}+1}]]]]
+} else {
+    # Default
+    set repo_path [file normalize [file dirname [info script]]/..]
 }
 
-set xpr_path [file normalize [lindex $argv 0]]
-set repo_path [file normalize [lindex $argv 1]]
-set vivado_version [lindex $argv 2]
-puts "Version $vivado_version"
+# Handle xpr_path argument
+set idx [lsearch ${argv} "-x"]
+if {${idx} != -1} {
+    set xpr_path [file normalize [lindex ${argv} [expr {${idx}+1}]]]
+} else {
+    # Default
+    set xpr_path [file join ${repo_path} proj [file tail $repo_path]].xpr]
+}
+
+# Handle workspace argument
+set idx [lsearch ${argv} "-w"]
+if {${idx} != -1} {
+    set workspace [file normalize [lindex ${argv} [expr {${idx}+1}]]]
+} else {
+    # Default
+    set workspace [file join ${repo_path} sdk]
+}
+
+# Handle vivado_version argument
+set idx [lsearch ${argv} "-v"]
+if {${idx} != -1} {
+    set vivado_version [lindex ${argv} [expr {${idx}+1}]]
+} else {
+    # Default
+    set vivado_version [version -short]
+}
+
+# Other variables
 set vivado_year [lindex [split $vivado_version "."] 0]
 set proj_name [file rootname [file tail $xpr_path]]
 
@@ -28,7 +65,7 @@ set part_name [get_property "part" $obj]
 puts "INFO: Configuring project IP handling properties"
 set_property "corecontainer.enable" "0" $obj
 set_property "ip_cache_permissions" "read write" $obj
-set_property "ip_output_repo" "[file normalize "$repo_path/repo/cache"]" $obj
+set_property "ip_output_repo" "[file normalize "$repo_path/proj/cache"]" $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {

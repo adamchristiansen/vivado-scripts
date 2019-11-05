@@ -25,17 +25,20 @@ if "linux" in platform.system().lower():
 elif "windows" in platform.system().lower():
     PLATFORM = "windows"
 else:
-    printerr("Error: Unsupported OS: {platform.system()}")
+    printerr(f"Error: Unsupported OS: {platform.system()}")
 
-# The required fields in the config.
-CONFIG_REQUIRED = [
-    "project_name",
-    "repo_path",
-    "xpr_path",
-    "vivado_path",
-    "vivado_version",
-    "zip_path"
-]
+# The items in the config
+CONFIG_ITEMS = {
+    "no_hdf":         { "required": False, "default": False },
+    "project_name":   { "required": True },
+    "repo_path":      { "required": False, "default": "." },
+    "vivado_path":    { "required": True },
+    "vivado_version": { "required": True },
+    "workspace_path": { "required": False, "default": "{repo_path}/sdk" },
+    "xpr_path":       { "required": False, "default": "proj/{project_name}.xpr" },
+    "zip_path":       { "required": False, "default": "{repo_path}/release/{project_name}.zip" },
+
+}
 
 # The encoding for subprocess communication.
 DEFAULT_ENCODING = "utf-8"
@@ -67,15 +70,18 @@ def read_config():
     elif PLATFORM == "windows":
         load_file(os.environ["APPDATA"], "vivado-scripts", "vivado-scripts", "config", FILENAME)
         load_file(CONFIG_FILENAME)
-    # Check that the config defined everything
-    for k in CONFIG_REQUIRED:
+    # Check that the config defined everything, and if not, fill in default
+    # values
+    for k, v in CONFIG_ITEMS.items():
         if k not in config:
-            printerr(f"Error: Missing configuration key: {k}")
-            sys.exit(ExitCode.BAD_CONFIG)
-    # Format all of the strings in the config
+            if v["required"]:
+                printerr(f"Error: Missing configuration key: {k}")
+                sys.exit(ExitCode.BAD_CONFIG)
+            else:
+                config[k] = v["default"]
     c = {}
     for k, v in config.items():
-        c[k] = v.format(**config)
+        c[k] = v.format(**config) if isinstance(v, str) else v
     return c
 
 def run_cmd(cmd, encoding=DEFAULT_ENCODING):
@@ -107,8 +113,9 @@ def default_handler(args):
     The default argument handler. This prints some information about the
     program.
     """
-    for k, v in read_config().items():
-        print(f"{k}: {v}")
+    c = read_config()
+    for k in sorted(c):
+        print(f"{k}: {c[k]}")
 
 def vivado_tcl(script_name, exit_code):
     """
@@ -124,17 +131,19 @@ def vivado_tcl(script_name, exit_code):
     r = None
     e = None
     try:
-        r = run_cmd([
+        cmd = [
             args.vivado_path,
-            "-mode",
-            "batch",
-            "-source",
-            script_path,
+            "-mode", "batch",
+            "-source", script_path,
             "-tclargs",
-            args.xpr_path,
-            args.repo_path,
-            args.vivado_version
-        ])
+            "-x", args.xpr_path,
+            "-r", args.repo_path,
+            "-v", args.vivado_version,
+            "-w", args.workspace_path,
+        ]
+        if args.no_hdf:
+            cmd.append("-no_hdf")
+        r = run_cmd(cmd)
     except Exception as ex:
         e = ex
     if (r is not None and r.returncode) or e is not None:
@@ -182,31 +191,39 @@ def parse_args():
     # Read defaults
     c = read_config()
     PROJECT_NAME = c["project_name"]
+    DEFAULT_NO_HDF = c["no_hdf"]
     DEFAULT_REPO_PATH = c["repo_path"]
     DEFAULT_VIVADO_PATH = c["vivado_path"]
     DEFAULT_VIVADO_VERSION = c["vivado_version"]
+    DEFAULT_WORKSPACE_PATH = c["workspace_path"]
     DEFAULT_XPR_PATH = c["xpr_path"]
     DEFAULT_ZIP_PATH = c["zip_path"]
     # Create a parser
-    p = argparse.ArgumentParser(
-        description="Handles Vivado project git repository operations")
-    p.set_defaults(repo_path=DEFAULT_REPO_PATH)
-    p.set_defaults(xpr_path=DEFAULT_XPR_PATH)
+    p = argparse.ArgumentParser(description="Handles Vivado project git repository operations")
+    # Set defaults
     p.set_defaults(vivado_path=DEFAULT_VIVADO_PATH)
+    p.set_defaults(repo_path=DEFAULT_REPO_PATH)
+    p.set_defaults(workspace_path=DEFAULT_WORKSPACE_PATH)
+    p.set_defaults(xpr_path=DEFAULT_XPR_PATH)
     p.set_defaults(vivado_version=DEFAULT_VIVADO_VERSION)
+    p.set_defaults(no_hdf=DEFAULT_NO_HDF)
+    p.set_defaults(zip_path=DEFAULT_ZIP_PATH)
     p.set_defaults(func=default_handler)
     sp = p.add_subparsers()
     # Checkin arguments
     pin = sp.add_parser("checkin", aliases=["ci"], help="Checks XPR into repo")
-    pin.add_argument("-b", "--vivado-path",    type=str, default=DEFAULT_VIVADO_PATH,    help="The path to the Vivado binary")
-    pin.add_argument("-r", "--repo-path",      type=str, default=DEFAULT_REPO_PATH,      help="The path to the repo to use")
-    pin.add_argument("-x", "--xpr-path",       type=str, default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
-    pin.add_argument("-v", "--vivado-version", type=str, default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
+    pin.add_argument("-b", "--vivado-path",    type=str,            default=DEFAULT_VIVADO_PATH,    help="The path to the Vivado binary")
+    pin.add_argument("-r", "--repo-path",      type=str,            default=DEFAULT_REPO_PATH,      help="The path to the repo to use")
+    pin.add_argument("-w", "--workspace-path", type=str,            default=DEFAULT_WORKSPACE_PATH, help="The path to the SDK workspace to use")
+    pin.add_argument("-x", "--xpr-path",       type=str,            default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
+    pin.add_argument("-v", "--vivado-version", type=str,            default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
+    pin.add_argument(      "--no-hdf",         action="store_true", default=DEFAULT_NO_HDF,         help="Do not check in hardware handoff")
     pin.set_defaults(func=checkin_handler)
     # Checkout arguments
     pout = sp.add_parser("checkout", aliases=["co"], help="Checks XPR out from repo")
     pout.add_argument("-b", "--vivado-path",    type=str, default=DEFAULT_VIVADO_PATH,    help="The path to the Vivado binary")
     pout.add_argument("-r", "--repo-path",      type=str, default=DEFAULT_REPO_PATH,      help="The path to the repo to use")
+    pout.add_argument("-w", "--workspace-path", type=str, default=DEFAULT_WORKSPACE_PATH, help="The path to the SDK workspace to use")
     pout.add_argument("-x", "--xpr-path",       type=str, default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
     pout.add_argument("-v", "--vivado-version", type=str, default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
     pout.set_defaults(func=checkout_handler)
@@ -214,6 +231,7 @@ def parse_args():
     pr = sp.add_parser("release", aliases=["re"], help="Creates release ZIP from XPR")
     pr.add_argument("-b", "--vivado-path",    type=str, default=DEFAULT_VIVADO_PATH,    help="The path to the Vivado binary")
     pr.add_argument("-r", "--repo-path",      type=str, default=DEFAULT_REPO_PATH,      help="The path to the repo to use")
+    pr.add_argument("-w", "--workspace-path", type=str, default=DEFAULT_WORKSPACE_PATH, help="The path to the SDK workspace to use")
     pr.add_argument("-x", "--xpr-path",       type=str, default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
     pr.add_argument("-v", "--vivado-version", type=str, default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
     pr.add_argument('-z', "--zip-path",       type=str, default=DEFAULT_ZIP_PATH,       help="Path to new release archive ZIP file")
@@ -221,14 +239,18 @@ def parse_args():
     # Parse the arguments
     args = p.parse_args()
     return collections.namedtuple("Args",
-        ["func", "repo_path", "script_dir", "vivado_path", "vivado_version",
-        "xpr_path"])(
+        ["func", "no_hdf", "repo_path", "script_dir", "vivado_path",
+        "vivado_version", "workspace_path", "xpr_path", "zip_path"])(
             args.func,
+            args.no_hdf if "no_hdf" in args else False,
             os.path.abspath(args.repo_path.replace("\\", "/")),
             os.path.dirname(os.path.abspath(__file__)),
             args.vivado_path.replace("\\", "/"),
             args.vivado_version,
-            os.path.abspath(args.xpr_path.replace("\\", "/")))
+            args.workspace_path,
+            os.path.abspath(args.xpr_path.replace("\\", "/")),
+            os.path.abspath(args.zip_path.replace("\\", "/")),
+        )
 
 if __name__ == "__main__":
     args = parse_args()

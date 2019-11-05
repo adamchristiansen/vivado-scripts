@@ -28,8 +28,10 @@ to the Tcl scripts which do the heavy lifting. Here is how it can be run:
   can accept the following options:
     - `-b` is the path to the Vivado binary to use
     - `-r` is the path to the repository root
+    - `-w` is the path to the SDK workspace
     - `-x` is the path to the XPR file to use
     - `-v` is the version number of the Vivado binary
+    - `-n` disables hardware handoff
     - `-h` shows help information for this subcommand
   Note that sources do not need to be added local to a Vivado project in order
   to be detected by this script.
@@ -37,6 +39,7 @@ to the Tcl scripts which do the heavy lifting. Here is how it can be run:
   can accept the following options:
     - `-b` is the path to the Vivado binary to use
     - `-r` is the path to the repository root
+    - `-w` is the path to the SDK workspace
     - `-x` is the path to the XPR file to use
     - `-v` is the version number of the Vivado binary
     - `-h` shows help information for this subcommand
@@ -44,6 +47,7 @@ to the Tcl scripts which do the heavy lifting. Here is how it can be run:
   It can accept the following options:
     - `-b` is the path to the Vivado binary to use
     - `-r` is the path to the repository root
+    - `-w` is the path to the SDK workspace
     - `-x` is the path to the XPR file to use
     - `-v` is the version number of the Vivado binary
     - `-z` is the path to the zip file to create
@@ -73,11 +77,13 @@ The configuration file may contain the following:
 
 ```json
 {
+  "no_hdf": False,
   "project_name": "Project",
   "repo_path": ".",
-  "xpr_path": "proj/{project_name}.xpr",
   "vivado_path": "/opt/Xilinx/Vivado/{vivado_version}/bin/vivado",
   "vivado_version": "2019.1",
+  "workspace_path": "{repo_path}/sdk",
+  "xpr_path": "proj/{project_name}.xpr",
   "zip_path": "{repo_path}/release/{project_name}.zip"
 }
 ```
@@ -86,11 +92,14 @@ The above is for Linux. On Windows it will look more like:
 
 ```json
 {
+  "no_hdf": False,
+  "project_name": "Project",
   "project_name": "Project",
   "repo_path": ".",
-  "xpr_path": "proj/{project_name}.xpr",
   "vivado_path": "C:/Xilinx/Vivado/{vivado_version}/bin/vivado",
   "vivado_version": "2019.1",
+  "workspace_path": "{repo_path}/sdk",
+  "xpr_path": "proj/{project_name}.xpr",
   "zip_path": "{repo_path}/release/{project_name}.zip"
 }
 ```
@@ -104,7 +113,7 @@ not be relied on.
 
 It is recommended to have at least the `vivado_path` and `vivado_version`
 stored external to the project. For most projects, it is likely that the
-project local `vivado-scripts.json` only needs to define the project name,
+project local `vivado-scripts.json` only needs to define `project_name`,
 which should be the same as the project name selected in Vivado.
 
 ## Repository Structure
