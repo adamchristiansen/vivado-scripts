@@ -1,10 +1,10 @@
 # Note: argument order does not matter when setting argv; all arguments are optional
 # Usage (No Defaults):
 #   set argv "-r <repo_path> -x <xpr_path> -v <vivado_version> -no_hdf -w <workspace>"
-#   source digilent_vivado_checkin.tcl
+#   source vivado-checkin.tcl
 # Usage (All Defaults):
 #   set argv ""
-#   source digilent_vivado_checkin.tcl
+#   source vivado-checkin.tcl
 # TODO: handle SDK projects.
 # TODO: add debug flag for argument checking
 
@@ -210,7 +210,7 @@ if {[file exists $repo_path/project_info.tcl] == 0 || $force_overwrite_info_scri
     puts "INFO: Checking in project_info.tcl to version control."
     set file_name $repo_path/project_info.tcl
     set file_obj [open $file_name "w"]
-    puts $file_obj "# This is an automatically generated file used by digilent_vivado_checkout.tcl to set project options"
+    puts $file_obj "# This is an automatically generated file used by vivado-checkout.tcl to set project options"
     puts $file_obj "proc set_project_properties_post_create_project {proj_name} {"
     puts $file_obj "    set project_obj \[get_projects \$proj_name\]"
     puts $file_obj "	set_property \"part\" \"$part\" \$project_obj"

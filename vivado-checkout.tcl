@@ -1,10 +1,10 @@
 # Note: argument order does not matter when setting argv; all arguments are optional
 # Usage (No Defaults):
 #   set argv "-r <repo_path> -x <xpr_path> -v <vivado_version> -w <workspace>"
-#   source digilent_vivado_checkout.tcl
+#   source vivado-checkout.tcl
 # Usage (All Defaults):
 #   set argv ""
-#   source digilent_vivado_checkout.tcl
+#   source vivado-checkout.tcl
 # TODO: handle SDK projects.
 # TODO: add debug flag for argument checking
 
