@@ -5,7 +5,9 @@ import collections
 import enum
 import json
 import os
+import pathlib
 import platform
+import shutil
 import subprocess
 import sys
 
@@ -84,6 +86,28 @@ def read_config():
         c[k] = v.format(**config) if isinstance(v, str) else v
     return c
 
+def copy_dir_contents(src, dest, exit_code=ExitCode.FAILURE):
+    """
+    Copy the contents of the source directory to the destination directory.
+    """
+    # Make sure the source directory exists
+    if not os.path.isdir(src):
+        printerr(f"Error: {src} must be a directory")
+        sys.exit(exit_code)
+    # Create the destination directory if it does not exist
+    pathlib.Path(dest).mkdir(parents=True, exist_ok=True)
+    # Copy the files
+    for f in sorted(os.listdir(src)):
+        s = os.path.join(src, f)
+        d = os.path.join(dest, f)
+        if os.path.isdir(s):
+            # Delete the target directory before the copy if it already exists
+            if os.path.isdir(d):
+                shutil.rmtree(d)
+            shutil.copytree(s, d)
+        else:
+            shutil.copy2(s, d)
+
 def run_cmd(cmd, encoding=DEFAULT_ENCODING):
     """
     Run a command as a subprocess.
@@ -159,12 +183,24 @@ def checkin_handler(args):
     Perform a check in using the parsed command line arguments.
     """
     vivado_tcl("vivado-checkin.tcl", ExitCode.CHECKIN_ERROR)
+    # Handle the SDK project
+    copy_dir_contents(
+            os.path.join(os.path.dirname(args.xpr_path),
+                f"{args.project_name}.sdk"),
+            os.path.join(args.repo_path, "sdk"),
+            exit_code=ExitCode.CHECKIN_ERROR)
 
 def checkout_handler(args):
     """
     Perform a checkout using the parsed command line arguments.
     """
     vivado_tcl("vivado-checkout.tcl", ExitCode.CHECKOUT_ERROR)
+    # Handle the SDK project
+    copy_dir_contents(
+            os.path.join(args.repo_path, "sdk"),
+            os.path.join(os.path.dirname(args.xpr_path),
+                f"{args.project_name}.sdk"),
+            exit_code=ExitCode.CHECKOUT_ERROR)
 
 def release_handler(args):
     """
@@ -239,10 +275,12 @@ def parse_args():
     # Parse the arguments
     args = p.parse_args()
     return collections.namedtuple("Args",
-        ["func", "no_hdf", "repo_path", "script_dir", "vivado_path",
-        "vivado_version", "workspace_path", "xpr_path", "zip_path"])(
+        ["func", "no_hdf", "project_name", "repo_path", "script_dir",
+        "vivado_path", "vivado_version", "workspace_path", "xpr_path",
+        "zip_path"])(
             args.func,
             args.no_hdf if "no_hdf" in args else False,
+            PROJECT_NAME,
             os.path.abspath(args.repo_path.replace("\\", "/")),
             os.path.dirname(os.path.abspath(__file__)),
             args.vivado_path.replace("\\", "/"),
