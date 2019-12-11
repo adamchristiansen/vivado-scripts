@@ -46,7 +46,7 @@ src/ip/*/**
 !src/other
 !src/other/**
 
-# Sdk workspace: handled by its own gitignore
+# SDK workspace: handled by its own gitignore
 !sdk/**
 
 # Hardware handoff
