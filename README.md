@@ -43,7 +43,7 @@ to the Tcl scripts which do the heavy lifting. Here is how it can be run:
     - `-x` is the path to the XPR file to use
     - `-v` is the version number of the Vivado binary
     - `-h` shows help information for this subcommand
-- `release` creates a release archibe from the the project using the XPR path.
+- `release` creates a release archive from the the project using the XPR path.
   It can accept the following options:
     - `-b` is the path to the Vivado binary to use
     - `-r` is the path to the repository root
@@ -77,7 +77,7 @@ The configuration file may contain the following:
 
 ```json
 {
-  "no_hdf": False,
+  "no_hdf": false,
   "project_name": "Project",
   "repo_path": ".",
   "vivado_path": "/opt/Xilinx/Vivado/{vivado_version}/bin/vivado",
@@ -92,7 +92,7 @@ The above is for Linux. On Windows it will look more like:
 
 ```json
 {
-  "no_hdf": False,
+  "no_hdf": false,
   "project_name": "Project",
   "project_name": "Project",
   "repo_path": ".",
@@ -255,70 +255,12 @@ The project structure is outlined below, relative to the repository root.
     `<app>/src` to `<project_repo>/sdk/appsrc`.
 7.  Make sure to update the repo's README as required.
 8.  Add, commit, and push your changes.
-9.  Create and upload a release ZIP to Github - see
-    [Creating a Release Archive](#creating-a-release-archive) below.
-
-### Creating a Release Archive
-
-1.  With an open Vivado project, make sure that a bitstream has been generated.
-2.  Click `File -> Project -> Archive`. Fill in the fields in the prompt as per
-    the table below then click `OK`.
-
-    | Field                            | Value                    |
-    |----------------------------------|--------------------------|
-    | `Archive name`                   | `vivado_proj`            |
-    | `Archive location`               | `<project_repo>/release` |
-    | `Temporary location`             | (Default)                |
-    | `Include configuration settings` | unchecked                |
-    | `Include run results`            | checked                  |
-    | `Include local IP cache results` | checked                  |
-3.  Navigate to the release subdirectory of the project repo and extract
-    `vivado_proj.xpr.zip`. Rename the resulting folder `vivado_proj` then
-    delete `vivado_proj.xpr.zip`.
-4.  If required, in Xilinx SDK, right click on your application project's `src`
-    folder and select `Export`. Use this to copy all of the sources from
-    `<app>/src` to `<project_repo>/release/sdk_appsrc`.
-5.  Copy `README.md` into the release subdirectory, and make sure that it
-    contains project specific instructions for using the release, especially
-    if any libraries need to be added to the BSP or if compiler settings need
-    to be added to the application project in SDK.
-6.  Compress the release subdirectory into a ZIP archive called
-    `<project_name>-<release_version_number>.zip` (for example
-    `Zybo-Z7-20-DMA-2018.2-3.zip`).
-7.  Draft a new release on Github and upload the ZIP to it.
-
-### Using a Release Archive
-
-1.  Download and extract the most recent release archive from the repository's
-    releases page.
-2.  Open the XPR file in the version of Vivado specified by the README.
-
-#### Vivado
-
-3.  Use Vivado's Hardware manager to connect to and program the target FPGA
-    board with the project's bitstream.
-
-#### Xilinx SDK
-
-4.  If the release archive contains an `sdk_appsrc` folder, export the
-    project's hardware to SDK and launch SDK. `Local to Project` is fine in
-    this instance.
-5.  Create a new application project (Empty Application template) and BSP, and
-    follow any instructions in the project's README for how to configure them.
-6.  Right click on the application project's `src` folder and select `Import`.
-    Import all files from `<extracted_location>/sdk_appsrc`, overwriting
-    anything that already exists.
-7.  Program and Run the application on the target FPGA board.
 
 ## Known Issues
 
 * For both releases and checked out repositories, SDK Application and BSP
   projects must be manually configured in order to add any additional libraries
-  and compiiler flags. This process is fairly error-prone.
-* The "archive project" functionality of Vivado may include local SDK sources
-  in the release archive. This should be avoided so that users have a clean
-  workspace to Export and Launch SDK into. The current process requires that
-  the project's SDK workspace is created external to the Vivado project.
+  and compiler flags. This process is fairly error-prone.
 * The process of creating a release archive currently must be done manually.
   This process can be automated further, but will require creation of an XSCT
   script to collect SDK application sources.

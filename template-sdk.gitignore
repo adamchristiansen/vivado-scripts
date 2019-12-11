@@ -1,20 +1,20 @@
-# blacklist everything
+# Blacklist everything
 **/*
 
-# whitelist each directory at root
+# Whitelist each directory at root
 !*/
 
-# whitelist project files in all project types (app, bsp, hw)
+# Whitelist project files in all project types (app, bsp, hw)
 !*/.project
 !*/.cproject
 !*/.sdkproject
 
-# blacklist directories starting with . (targets .metadata and .sdk)
+# Blacklist directories starting with . (targets .metadata and .sdk)
 .metadata/
 .sdk/
 RemoteSystemsTempFiles/
 
-# whitelist the gitignore
+# Whitelist the gitignore
 !.gitignore
 
 # app/bsp/hw: blacklist all subdirs
@@ -26,5 +26,5 @@ RemoteSystemsTempFiles/
 !*_bsp/*.mss
 !*_bsp/Makefile
 
-# whitelist keep files (to preserve empty directories in git)
+# Whitelist keep files (to preserve empty directories in git)
 !**/.keep
