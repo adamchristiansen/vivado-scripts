@@ -25,9 +25,6 @@ RemoteSystemsTempFiles/
 # bsp: whitelist mss and makefile
 !*_bsp/*.mss
 !*_bsp/Makefile
-# hw: whitelist bit and hdf
-!*_hw_platform_*/*.bit
-!*_hw_platform_*/*.hdf
 
 # whitelist keep files (to preserve empty directories in git)
 !**/.keep
