@@ -224,7 +224,6 @@ def parse_args():
     DEFAULT_VIVADO_VERSION = c["vivado_version"]
     DEFAULT_WORKSPACE_PATH = c["workspace_path"]
     DEFAULT_XPR_PATH = c["xpr_path"]
-    DEFAULT_ZIP_PATH = c["zip_path"]
     # Create a parser
     p = argparse.ArgumentParser(description="Handles Vivado project git repository operations")
     # Set defaults
@@ -234,7 +233,6 @@ def parse_args():
     p.set_defaults(xpr_path=DEFAULT_XPR_PATH)
     p.set_defaults(vivado_version=DEFAULT_VIVADO_VERSION)
     p.set_defaults(no_hdf=DEFAULT_NO_HDF)
-    p.set_defaults(zip_path=DEFAULT_ZIP_PATH)
     p.set_defaults(func=default_handler)
     sp = p.add_subparsers()
     # Checkin arguments
@@ -258,8 +256,7 @@ def parse_args():
     args = p.parse_args()
     return collections.namedtuple("Args",
         ["func", "no_hdf", "project_name", "repo_path", "script_dir",
-        "vivado_path", "vivado_version", "workspace_path", "xpr_path",
-        "zip_path"])(
+        "vivado_path", "vivado_version", "workspace_path", "xpr_path"])(
             args.func,
             args.no_hdf if "no_hdf" in args else False,
             PROJECT_NAME,
@@ -269,7 +266,6 @@ def parse_args():
             args.vivado_version,
             args.workspace_path,
             os.path.abspath(args.xpr_path.replace("\\", "/")),
-            os.path.abspath(args.zip_path.replace("\\", "/")),
         )
 
 if __name__ == "__main__":
