@@ -85,8 +85,6 @@ if {[llength $already_opened] == 0} {
     current_project [lindex $already_opened 0]
 }
 
-
-
 set required_dirs [list 				\
     $repo_path/proj						\
     $repo_path/hw_handoff			    \

@@ -17,7 +17,6 @@ class ExitCode(enum.IntEnum):
     BAD_CONFIG = 2
     CHECKIN_ERROR = 3
     CHECKOUT_ERROR = 4
-    RELEASE_ERROR = 4
 
 def printerr(s):
     print(s, file=sys.stderr)
@@ -38,8 +37,6 @@ CONFIG_ITEMS = {
     "vivado_version": { "required": True },
     "workspace_path": { "required": False, "default": "{repo_path}/sdk" },
     "xpr_path":       { "required": False, "default": "proj/{project_name}.xpr" },
-    "zip_path":       { "required": False, "default": "{repo_path}/release/{project_name}.zip" },
-
 }
 
 # The encoding for subprocess communication.
@@ -202,12 +199,6 @@ def checkout_handler(args):
                 f"{args.project_name}.sdk"),
             exit_code=ExitCode.CHECKOUT_ERROR)
 
-def release_handler(args):
-    """
-    Perform a release archiving using the parsed command line arguments.
-    """
-    vivado_tcl("vivado-release.tcl", ExitCode.RELEASE_ERROR)
-
 def parse_args():
     """
     Parses the command line arguments.
@@ -263,15 +254,6 @@ def parse_args():
     pout.add_argument("-x", "--xpr-path",       type=str, default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
     pout.add_argument("-v", "--vivado-version", type=str, default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
     pout.set_defaults(func=checkout_handler)
-    # Release arguments
-    pr = sp.add_parser("release", aliases=["re"], help="Creates release ZIP from XPR")
-    pr.add_argument("-b", "--vivado-path",    type=str, default=DEFAULT_VIVADO_PATH,    help="The path to the Vivado binary")
-    pr.add_argument("-r", "--repo-path",      type=str, default=DEFAULT_REPO_PATH,      help="The path to the repo to use")
-    pr.add_argument("-w", "--workspace-path", type=str, default=DEFAULT_WORKSPACE_PATH, help="The path to the SDK workspace to use")
-    pr.add_argument("-x", "--xpr-path",       type=str, default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
-    pr.add_argument("-v", "--vivado-version", type=str, default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
-    pr.add_argument('-z', "--zip-path",       type=str, default=DEFAULT_ZIP_PATH,       help="Path to new release archive ZIP file")
-    pr.set_defaults(func=release_handler)
     # Parse the arguments
     args = p.parse_args()
     return collections.namedtuple("Args",

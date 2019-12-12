@@ -43,15 +43,6 @@ to the Tcl scripts which do the heavy lifting. Here is how it can be run:
     - `-x` is the path to the XPR file to use
     - `-v` is the version number of the Vivado binary
     - `-h` shows help information for this subcommand
-- `release` creates a release archive from the the project using the XPR path.
-  It can accept the following options:
-    - `-b` is the path to the Vivado binary to use
-    - `-r` is the path to the repository root
-    - `-w` is the path to the SDK workspace
-    - `-x` is the path to the XPR file to use
-    - `-v` is the version number of the Vivado binary
-    - `-z` is the path to the zip file to create
-    - `-h` shows help information for this subcommand
 
 ## Configuration File
 
@@ -84,7 +75,6 @@ The configuration file may contain the following:
   "vivado_version": "2019.1",
   "workspace_path": "{repo_path}/sdk",
   "xpr_path": "proj/{project_name}.xpr",
-  "zip_path": "{repo_path}/release/{project_name}.zip"
 }
 ```
 
@@ -100,7 +90,6 @@ The above is for Linux. On Windows it will look more like:
   "vivado_version": "2019.1",
   "workspace_path": "{repo_path}/sdk",
   "xpr_path": "proj/{project_name}.xpr",
-  "zip_path": "{repo_path}/release/{project_name}.zip"
 }
 ```
 
@@ -126,8 +115,6 @@ The project structure is outlined below, relative to the repository root.
 
 - `/vivado-scripts` contains the scripts described by this document.
 - `/proj` contains a checked-out Vivado project.
-- `/release` contains temporary files necessary to generate a release zip
-  archive.
 - `/repo` contains local IP, IP submodules, and cached generated sources.
 - `/sdk` contains exported SDK sources.
 - `/src` contains source files for the Vivado Project.
@@ -148,7 +135,7 @@ The project structure is outlined below, relative to the repository root.
   supported. Note that this should be deleted and recreated when porting a
   project from one board to another.
 - `/README.md` is a Markdown file describing the project and the process needed
-  to use it, from downloading the release archive, to programming the FPGA.
+  to use the project.
 
 ## Workflows
 
@@ -177,11 +164,8 @@ The project structure is outlined below, relative to the repository root.
 6.  If required, in Xilinx SDK, right click on your application project's `src`
     folder and select "Export". Use this to copy all of the sources from
     `<app>/src` to `<project_repo>/sdk/appsrc`.
-7.  Create a `README.md` for the repo that specifies what the project is
-    supposed to do and how to use a release archive for it.
+7.  Create a `README.md` for the repo that specifies what the project is.
 8.  Add, commit, and push your changes.
-9.  Create and upload a release ZIP to Github - see
-    [Creating a Release Archive](#creating-a-release-archive) below.
 
 ### Retargeting an Existing Project to use these Scripts
 
@@ -213,11 +197,8 @@ The project structure is outlined below, relative to the repository root.
 7.  If required, in Xilinx SDK, right click on your application project's `src`
     folder and select "Export". Use this to copy all of the sources from
     `<app>/src` to `<project_repo>/sdk/appsrc`.
-8.  Create a `README.md` for the repo that specifies what the project is
-    supposed to do and how to use a release archive for it.
+8.  Create a `README.md` for the repo that specifies what the project is.
 9.  Add, commit, and push your changes.
-10. Create and upload a release ZIP to Github - see
-    [Creating a Release Archive](#creating-a-release-archive) below.
 
 ### Making Changes to a Project that uses this Submodule
 
@@ -258,12 +239,9 @@ The project structure is outlined below, relative to the repository root.
 
 ## Known Issues
 
-* For both releases and checked out repositories, SDK Application and BSP
-  projects must be manually configured in order to add any additional libraries
-  and compiler flags. This process is fairly error-prone.
-* The process of creating a release archive currently must be done manually.
-  This process can be automated further, but will require creation of an XSCT
-  script to collect SDK application sources.
+* For Checked out repositories, SDK Application and BSP projects must be
+  manually configured in order to add any additional libraries and compiler
+  flags. This process is fairly error-prone.
 * There is some danger that modifications to Digilent's board files may break
   existing projects, it may be worth considering adding the
   [Digilent/vivado-boards](https://github.com/Digilent/vivado-boards)
