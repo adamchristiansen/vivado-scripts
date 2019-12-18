@@ -211,13 +211,13 @@ if {[file exists $repo_path/project_info.tcl] == 0 || $force_overwrite_info_scri
     puts $file_obj "# This is an automatically generated file used by vivado-checkout.tcl to set project options"
     puts $file_obj "proc set_project_properties_post_create_project {proj_name} {"
     puts $file_obj "    set project_obj \[get_projects \$proj_name\]"
-    puts $file_obj "	set_property \"part\" \"$part\" \$project_obj"
+    puts $file_obj "    set_property \"part\" \"$part\" \$project_obj"
     if {$board_part ne ""} {
-        puts $file_obj "	set_property \"board_part\" \"$board_part\" \$project_obj"
+        puts $file_obj "    set_property \"board_part\" \"$board_part\" \$project_obj"
     }
-    puts $file_obj "	set_property \"default_lib\" \"$default_lib\" \$project_obj"
-    puts $file_obj "	set_property \"simulator_language\" \"$simulator_language\" \$project_obj"
-    puts $file_obj "	set_property \"target_language\" \"$target_language\" \$project_obj"
+    puts $file_obj "    set_property \"default_lib\" \"$default_lib\" \$project_obj"
+    puts $file_obj "    set_property \"simulator_language\" \"$simulator_language\" \$project_obj"
+    puts $file_obj "    set_property \"target_language\" \"$target_language\" \$project_obj"
     puts $file_obj "}"
     puts $file_obj ""
     puts $file_obj "proc set_project_properties_pre_add_repo {proj_name} {"
@@ -227,6 +227,7 @@ if {[file exists $repo_path/project_info.tcl] == 0 || $force_overwrite_info_scri
     puts $file_obj ""
     puts $file_obj "proc set_project_properties_post_create_runs {proj_name} {"
     puts $file_obj "    set project_obj \[get_projects \$proj_name\]"
+    puts $file_obj "    # set_property \"top\" \"top_module_name\" \[current_fileset\]"
     puts $file_obj "    # default nothing"
     puts $file_obj "}"
 
