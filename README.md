@@ -68,7 +68,6 @@ The configuration file may contain the following:
 
 ```json
 {
-  "no_hdf": false,
   "project_name": "Project",
   "repo_path": ".",
   "vivado_path": "/opt/Xilinx/Vivado/{vivado_version}/bin/vivado",
@@ -82,7 +81,6 @@ The above is for Linux. On Windows it will look more like:
 
 ```json
 {
-  "no_hdf": false,
   "project_name": "Project",
   "project_name": "Project",
   "repo_path": ".",

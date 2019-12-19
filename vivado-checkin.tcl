@@ -1,6 +1,6 @@
 # Note: argument order does not matter when setting argv; all arguments are optional
 # Usage (No Defaults):
-#   set argv "-r <repo_path> -x <xpr_path> -v <vivado_version> -no_hdf -w <workspace>"
+#   set argv "-r <repo_path> -x <xpr_path> -v <vivado_version> -w <workspace>"
 #   source vivado-checkin.tcl
 # Usage (All Defaults):
 #   set argv ""
@@ -46,14 +46,6 @@ if {${idx} != -1} {
     set vivado_version [version -short]
 }
 
-# Handle no_hdf argument
-set idx [lsearch ${argv} "-no_hdf"]
-if {${idx} != -1} {
-    set no_hdf 1
-} else {
-    set no_hdf 0
-}
-
 # Handle workspace argument
 set idx [lsearch ${argv} "-w"]
 if {${idx} != -1} {
@@ -87,7 +79,6 @@ if {[llength $already_opened] == 0} {
 
 set required_dirs [list 				\
     $repo_path/proj						\
-    $repo_path/hw_handoff			    \
     $repo_path/src 						\
     $repo_path/src/bd 					\
     $repo_path/src/constraints 			\
@@ -101,7 +92,6 @@ set required_dirs [list 				\
 ]
 set required_files [list 				\
     $repo_path/proj/.keep				\
-    $repo_path/hw_handoff/.keep			\
     $repo_path/src/bd/.keep				\
     $repo_path/src/constraints/.keep	\
     $repo_path/src/ip/.keep				\
@@ -250,22 +240,6 @@ if {[file exists $sdk_gitignore] == 0} {
     set target $sdk_gitignore
     set origin [file join $script_dir template-sdk.gitignore]
     file copy -force $origin $target
-}
-
-# Check if the project has an up-to-date bitstream
-if {[get_property NEEDS_REFRESH [get_runs impl_1]]} {
-    puts "WARNING: bitstream is not up-to-date; hardwre handoff cannot be checked in"
-} else {
-    # if .sysdef exists, export it to repo/hw_handoff
-    set sysdef [glob -nocomplain [file rootname $xpr_path].runs/impl_1/*.sysdef]
-    if {[llength $sysdef] == 1} {
-        set hdf [file rootname [file tail $sysdef]].hdf
-        set hdf [file join $repo_path hw_handoff hdf]
-        file copy -force $sysdef $hdf
-        puts "INFO: Checking in [file tail $hdf] to version control"
-    } else {
-        puts "WARNING: multiple or no sysdef files found, cannot export hardware handoff"
-    }
 }
 
 puts "INFO: Project $proj_file has been checked into version control"

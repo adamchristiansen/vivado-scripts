@@ -49,10 +49,5 @@ src/ip/*/**
 # SDK workspace: handled by its own gitignore
 !sdk/**
 
-# Hardware handoff
-!hw_handoff/
-hw_handoff/*
-!hw_handoff/*.hdf
-
 # Maintain required directories
 !**/.keep

@@ -30,7 +30,6 @@ else:
 
 # The items in the config
 CONFIG_ITEMS = {
-    "no_hdf":         { "required": False, "default": False },
     "project_name":   { "required": True },
     "repo_path":      { "required": False, "default": "." },
     "vivado_path":    { "required": True },
@@ -162,8 +161,6 @@ def vivado_tcl(script_name, exit_code):
             "-v", args.vivado_version,
             "-w", args.workspace_path,
         ]
-        if args.no_hdf:
-            cmd.append("-no_hdf")
         r = run_cmd(cmd)
     except Exception as ex:
         e = ex
@@ -218,7 +215,6 @@ def parse_args():
     # Read defaults
     c = read_config()
     PROJECT_NAME = c["project_name"]
-    DEFAULT_NO_HDF = c["no_hdf"]
     DEFAULT_REPO_PATH = c["repo_path"]
     DEFAULT_VIVADO_PATH = c["vivado_path"]
     DEFAULT_VIVADO_VERSION = c["vivado_version"]
@@ -232,7 +228,6 @@ def parse_args():
     p.set_defaults(workspace_path=DEFAULT_WORKSPACE_PATH)
     p.set_defaults(xpr_path=DEFAULT_XPR_PATH)
     p.set_defaults(vivado_version=DEFAULT_VIVADO_VERSION)
-    p.set_defaults(no_hdf=DEFAULT_NO_HDF)
     p.set_defaults(func=default_handler)
     sp = p.add_subparsers()
     # Checkin arguments
@@ -242,7 +237,6 @@ def parse_args():
     pin.add_argument("-w", "--workspace-path", type=str,            default=DEFAULT_WORKSPACE_PATH, help="The path to the SDK workspace to use")
     pin.add_argument("-x", "--xpr-path",       type=str,            default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
     pin.add_argument("-v", "--vivado-version", type=str,            default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
-    pin.add_argument(      "--no-hdf",         action="store_true", default=DEFAULT_NO_HDF,         help="Do not check in hardware handoff")
     pin.set_defaults(func=checkin_handler)
     # Checkout arguments
     pout = sp.add_parser("checkout", aliases=["co"], help="Checks XPR out from repo")
@@ -255,10 +249,9 @@ def parse_args():
     # Parse the arguments
     args = p.parse_args()
     return collections.namedtuple("Args",
-        ["func", "no_hdf", "project_name", "repo_path", "script_dir",
-        "vivado_path", "vivado_version", "workspace_path", "xpr_path"])(
+        ["func", "project_name", "repo_path", "script_dir", "vivado_path",
+                "vivado_version", "workspace_path", "xpr_path"])(
             args.func,
-            args.no_hdf if "no_hdf" in args else False,
             PROJECT_NAME,
             os.path.abspath(args.repo_path.replace("\\", "/")),
             os.path.dirname(os.path.abspath(__file__)),
