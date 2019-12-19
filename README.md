@@ -31,7 +31,6 @@ to the Tcl scripts which do the heavy lifting. Here is how it can be run:
     - `-w` is the path to the SDK workspace
     - `-x` is the path to the XPR file to use
     - `-v` is the version number of the Vivado binary
-    - `-n` disables hardware handoff
     - `-h` shows help information for this subcommand
   Note that sources do not need to be added local to a Vivado project in order
   to be detected by this script.
