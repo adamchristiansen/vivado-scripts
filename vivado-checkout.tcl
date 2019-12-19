@@ -86,7 +86,9 @@ set_project_properties_pre_add_repo $proj_name
 # Set IP repository paths
 puts "INFO: Setting IP repository paths"
 set obj [get_filesets sources_1]
-set_property "ip_repo_paths" "[file normalize $repo_path/repo]" $obj
+if { [file isdirectory "[file normalize $repo_path/repo]"] == 1 } {
+    set_property "ip_repo_paths" "[file normalize $repo_path/repo]" $obj
+}
 
 # Refresh IP Repositories
 puts "INFO: Refreshing IP repositories"
