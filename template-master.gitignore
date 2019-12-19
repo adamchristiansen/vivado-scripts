@@ -48,6 +48,3 @@ src/ip/*/**
 
 # SDK workspace: handled by its own gitignore
 !sdk/**
-
-# Maintain required directories
-!**/.keep

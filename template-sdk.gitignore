@@ -28,6 +28,3 @@ RemoteSystemsTempFiles/
 # bsp: whitelist mss and makefile
 !*_bsp/*.mss
 !*_bsp/Makefile
-
-# Whitelist keep files (to preserve empty directories in git)
-!**/.keep
