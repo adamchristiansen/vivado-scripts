@@ -12,7 +12,7 @@
 !*/.cproject
 !*/.sdkproject
 # Then ignore the ones that are not needed
-sdk/*hw_platform*/.project
+*hw_platform*/.project
 
 # Blacklist directories starting with . (targets .metadata and .sdk)
 .metadata/
