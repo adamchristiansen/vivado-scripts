@@ -11,12 +11,15 @@
 !*/.project
 !*/.cproject
 !*/.sdkproject
-# Then ignore the ones that are not needed
-*hw_platform*/.project
 
-# Blacklist directories starting with . (targets .metadata and .sdk)
+# The hardware platforms are not needed
+/*hw_platform*
+
+# Blacklist directories starting with .
 .metadata/
 .sdk/
+
+# Don't need this
 RemoteSystemsTempFiles/
 
 # Whitelist the gitignore
