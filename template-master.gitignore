@@ -43,8 +43,6 @@ src/hdl/**
 !src/ip/*
 src/ip/*/**
 !src/ip/**/*.xci
-!src/other
-!src/other/**
 
 # SDK workspace: handled by its own gitignore
 !sdk/**

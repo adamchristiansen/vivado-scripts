@@ -86,7 +86,6 @@ set required_dirs [list        \
     $repo_path/src/constraints \
     $repo_path/src/ip          \
     $repo_path/src/hdl         \
-    $repo_path/src/other       \
     $repo_path/repo            \
     $repo_path/repo/local      \
     $repo_path/repo/cache      \
@@ -126,14 +125,6 @@ foreach source_file [get_files -of_objects [get_filesets sources_1]] {
         set subdir hdl
     } elseif {[regexp "^.*/sources_1/new/.*\.svh$" $origin]} {
         set subdir hdl
-    } elseif {
-            [file extension $origin] != ".vhd" &&
-            [file extension $origin] != ".v"   &&
-            [file extension $origin] != ".sv"  &&
-            [file extension $origin] != ".svh" &&
-            [file extension $origin] != ".bd"  &&
-            [file extension $origin] != ".xci"} {
-        set subdir other
     } else {
         set skip 1
     }
@@ -153,12 +144,14 @@ foreach source_file [get_files -of_objects [get_filesets sources_1]] {
         }
     }
 
-    if {$skip == 0} {
-        puts "INFO: Checking in [file tail $origin] to version control."
-        set target $repo_path/src/$subdir/[file tail $origin]
-        if {[file exists $target] == 0} {
-            file copy -force $origin $target
-        }
+    if {$skip == 1} {
+        continue
+    }
+
+    puts "INFO: Checking in [file tail $origin] to version control."
+    set target $repo_path/src/$subdir/[file tail $origin]
+    if {[file exists $target] == 0} {
+        file copy -force $origin $target
     }
 }
 
