@@ -6,7 +6,6 @@
 #   set argv ""
 #   source vivado-checkin.tcl
 # TODO: handle SDK projects.
-# TODO: add debug flag for argument checking
 
 foreach arg $argv {
     puts $arg
@@ -86,6 +85,7 @@ set required_dirs [list        \
     $repo_path/src/constraints \
     $repo_path/src/ip          \
     $repo_path/src/hdl         \
+    $repo_path/src/sim         \
     $repo_path/repo            \
     $repo_path/repo/local      \
     $repo_path/repo/cache      \
@@ -154,6 +154,37 @@ foreach source_file [get_files -of_objects [get_filesets sources_1]] {
         file copy -force $origin $target
     }
 }
+
+# Save simulation sources
+foreach sim_file [get_files -of_objects [get_filesets sim_1]] {
+    set origin [get_property name $sim_file]
+    set skip 0
+
+    if {[regexp "^$repo_path/src/.*" $origin]} {
+        set skip 1
+    } elseif {[regexp "^.*/sim_1/new/.*\.vhd$" $origin]} {
+        set subdir sim
+    } elseif {[regexp "^.*/sim_1/new/.*\.v$" $origin]} {
+        set subdir sim
+    } elseif {[regexp "^.*/sim_1/new/.*\.sv$" $origin]} {
+        set subdir sim
+    } elseif {[regexp "^.*/sim_1/new/.*\.svh$" $origin]} {
+        set subdir sim
+    } else {
+        set skip 1
+    }
+
+    if {$skip == 1} {
+        continue
+    }
+
+    puts "INFO: Checking in [file tail $origin] to version control."
+    set target $repo_path/src/$subdir/[file tail $origin]
+    if {[file exists $target] == 0} {
+        file copy -force $origin $target
+    }
+}
+
 
 # Save IP sources
 foreach ip [get_ips] {

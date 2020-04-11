@@ -6,7 +6,6 @@
 #   set argv ""
 #   source vivado-checkout.tcl
 # TODO: handle SDK projects.
-# TODO: add debug flag for argument checking
 
 # Handle repo_path argument
 set idx [lsearch ${argv} "-r"]
