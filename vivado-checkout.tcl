@@ -72,6 +72,12 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
     create_fileset -srcset sources_1
 }
 
+# Create 'sim_1' fileset (if not found)
+if {[string equal [get_filesets -quiet sim_1] ""]} {
+    puts "INFO: Creating im_1 fileset"
+    create_fileset -simset sim_1
+}
+
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
     puts "INFO: Creating constrs_1 fileset"
@@ -96,6 +102,10 @@ update_ip_catalog -rebuild
 # Add hardware description language sources
 puts "INFO: Adding HDL sources"
 add_files -quiet -norecurse $repo_path/src/hdl
+
+# Add simulation sources
+puts "INFO: Adding simulation sources"
+add_files -quiet -norecurse -fileset sim_1 $repo_path/src/sim
 
 # Add IPs
 # TODO: handle IP core-container files
