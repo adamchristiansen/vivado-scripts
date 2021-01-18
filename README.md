@@ -72,7 +72,7 @@ The configuration file may contain the following:
   "vivado_path": "/opt/Xilinx/Vivado/{vivado_version}/bin/vivado",
   "vivado_version": "2019.1",
   "workspace_path": "{repo_path}/sdk",
-  "xpr_path": "proj/{project_name}.xpr",
+  "xpr_path": "proj/{project_name}.xpr"
 }
 ```
 
@@ -86,7 +86,7 @@ The above is for Linux. On Windows it will look more like:
   "vivado_path": "C:/Xilinx/Vivado/{vivado_version}/bin/vivado",
   "vivado_version": "2019.1",
   "workspace_path": "{repo_path}/sdk",
-  "xpr_path": "proj/{project_name}.xpr",
+  "xpr_path": "proj/{project_name}.xpr"
 }
 ```
 

@@ -1,11 +1,10 @@
 # Note: argument order does not matter when setting argv; all arguments are optional
 # Usage (No Defaults):
-#   set argv "-r <repo_path> -x <xpr_path> -v <vivado_version> -w <workspace>"
+#   set argv "-r <repo_path> -x <xpr_path> -v <vivado_version>
 #   source vivado-checkin.tcl
 # Usage (All Defaults):
 #   set argv ""
 #   source vivado-checkin.tcl
-# TODO: handle SDK projects.
 
 foreach arg $argv {
     puts $arg
@@ -44,21 +43,6 @@ if {${idx} != -1} {
 } else {
     set vivado_version [version -short]
 }
-
-# Handle workspace argument
-set idx [lsearch ${argv} "-w"]
-if {${idx} != -1} {
-    set workspace_path [glob -nocomplain [file normalize [lindex ${argv} [expr {${idx}+1}]]]]
-} else {
-    # Default
-    set workspace_path [glob -nocomplain [file join ${repo_path} sdk]]
-}
-if {[llength ${workspace_path}] != 1} {
-    puts "ERROR: Workspace not found"
-} else {
-    set workspace_path [lindex ${workspace_path} 0]
-}
-
 
 set vivado_version [lindex $argv 2]; # unused
 

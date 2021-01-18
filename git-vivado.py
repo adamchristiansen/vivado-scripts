@@ -159,7 +159,6 @@ def vivado_tcl(script_name, exit_code):
             "-x", args.xpr_path,
             "-r", args.repo_path,
             "-v", args.vivado_version,
-            "-w", args.workspace_path,
         ]
         r = run_cmd(cmd)
     except Exception as ex:
@@ -182,7 +181,7 @@ def checkin_handler(args):
         copy_dir_contents(
                 os.path.join(os.path.dirname(args.xpr_path),
                     f"{args.project_name}.sdk"),
-                os.path.join(args.repo_path, "sdk"),
+                args.workspace_path,
                 exit_code=ExitCode.CHECKIN_ERROR)
 
 def checkout_handler(args):
@@ -193,7 +192,7 @@ def checkout_handler(args):
     # Handle the SDK project
     if args.sdk:
         copy_dir_contents(
-                os.path.join(args.repo_path, "sdk"),
+                args.workspace_path,
                 os.path.join(os.path.dirname(args.xpr_path),
                     f"{args.project_name}.sdk"),
                 exit_code=ExitCode.CHECKOUT_ERROR)
