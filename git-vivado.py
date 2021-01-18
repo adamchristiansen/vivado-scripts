@@ -178,7 +178,7 @@ def checkin_handler(args):
     """
     vivado_tcl("vivado-checkin.tcl", ExitCode.CHECKIN_ERROR)
     # Handle the SDK project
-    if not args.no_sdk:
+    if args.sdk:
         copy_dir_contents(
                 os.path.join(os.path.dirname(args.xpr_path),
                     f"{args.project_name}.sdk"),
@@ -191,7 +191,7 @@ def checkout_handler(args):
     """
     vivado_tcl("vivado-checkout.tcl", ExitCode.CHECKOUT_ERROR)
     # Handle the SDK project
-    if not args.no_sdk:
+    if args.sdk:
         copy_dir_contents(
                 os.path.join(args.repo_path, "sdk"),
                 os.path.join(os.path.dirname(args.xpr_path),
@@ -239,7 +239,7 @@ def parse_args():
     pin.add_argument("-w", "--workspace-path", type=str, default=DEFAULT_WORKSPACE_PATH, help="The path to the SDK workspace to use")
     pin.add_argument("-x", "--xpr-path",       type=str, default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
     pin.add_argument("-v", "--vivado-version", type=str, default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
-    pin.add_argument(      "--no-sdk",                   action='store_true',            help="Do not copy the SDK files into the repository")
+    pin.add_argument(      "--sdk",                      action='store_true',            help="Copy the SDK files into the repository")
     pin.set_defaults(func=checkin_handler)
     # Checkout arguments
     pout = sp.add_parser("checkout", aliases=["co"], help="Checks XPR out from repo")
@@ -248,13 +248,13 @@ def parse_args():
     pout.add_argument("-w", "--workspace-path", type=str, default=DEFAULT_WORKSPACE_PATH, help="The path to the SDK workspace to use")
     pout.add_argument("-x", "--xpr-path",       type=str, default=DEFAULT_XPR_PATH,       help="The path to the XPR file to use")
     pout.add_argument("-v", "--vivado-version", type=str, default=DEFAULT_VIVADO_VERSION, help="The Vivado version to use")
-    pout.add_argument(      "--no-sdk",                   action='store_true',            help="Do not copy the SDK files into the project")
+    pout.add_argument(      "--sdk",                      action='store_true',            help="Copy the SDK files into the project")
     pout.set_defaults(func=checkout_handler)
     # Parse the arguments
     args = p.parse_args()
     return collections.namedtuple("Args",
         ["func", "project_name", "repo_path", "script_dir", "vivado_path",
-                "vivado_version", "workspace_path", "xpr_path", "no_sdk"])(
+                "vivado_version", "workspace_path", "xpr_path", "sdk"])(
             args.func,
             PROJECT_NAME,
             os.path.abspath(args.repo_path.replace("\\", "/")),
@@ -263,7 +263,7 @@ def parse_args():
             args.vivado_version,
             args.workspace_path,
             os.path.abspath(args.xpr_path.replace("\\", "/")),
-            args.no_sdk,
+            args.sdk,
         )
 
 if __name__ == "__main__":
