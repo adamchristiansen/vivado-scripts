@@ -3,54 +3,54 @@
 
 # Root
 /*
-!.gitignore
-!.gitmodules
-!README.md
-!LICENSE
-!project_info.tcl
-!proj/
-!repo/
-!sdk/
-!src/
-!vivado-scripts/
-!vivado-scripts.json
+!/.gitignore
+!/.gitmodules
+!/README.md
+!/LICENSE
+!/project_info.tcl
+!/proj/
+!/repo/
+!/sdk/
+!/src/
+!/vivado-scripts/
+!/vivado-scripts.json
 
 # Vivado workspace
-proj/*
+/proj
 
 # IP repository
-repo/**
-!repo/vivado-library
-repo/vivado-library/**
-!repo/local
-!repo/local/**
-!repo/cache
-repo/cache/**
+/repo/**
+!/repo/vivado-library
+/repo/vivado-library/**
+!/repo/local
+!/repo/local/**
+!/repo/cache
+/repo/cache/**
 
 # Version controlled sources
-src/**
-!src/bd
-src/bd/**
-!src/bd/*.tcl
-!src/constraints
-src/constraints/**
-!src/constraints/*.xdc
-!src/hdl
-src/hdl/**
-!src/hdl/*.v
-!src/hdl/*.sv
-!src/hdl/*.svh
-!src/hdl/*.vhd
-!src/ip
-!src/ip/*
-src/ip/*/**
-!src/ip/**/*.xci
-!src/sim
-src/sim/**
-!src/sim/*.v
-!src/sim/*.sv
-!src/sim/*.svh
-!src/sim/*.vhd
+/src/**
+!/src/bd
+/src/bd/**
+!/src/bd/*.tcl
+!/src/constraints
+/src/constraints/**
+!/src/constraints/*.xdc
+!/src/hdl
+/src/hdl/**
+!/src/hdl/*.v
+!/src/hdl/*.sv
+!/src/hdl/*.svh
+!/src/hdl/*.vhd
+!/src/ip
+!/src/ip/*
+/src/ip/*/**
+!/src/ip/**/*.xci
+!/src/sim
+/src/sim/**
+!/src/sim/*.v
+!/src/sim/*.sv
+!/src/sim/*.svh
+!/src/sim/*.vhd
 
 # SDK workspace: handled by its own gitignore
-!sdk/**
+!/sdk/**
