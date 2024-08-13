@@ -66,7 +66,7 @@ def read_config():
         load_file(os.environ["HOME"], "." + CONFIG_FILENAME)
         load_file(CONFIG_FILENAME)
     elif PLATFORM == "windows":
-        load_file(os.environ["APPDATA"], "vivado-scripts", "vivado-scripts", "config", FILENAME)
+        load_file(os.environ["APPDATA"], "vivado-scripts", "vivado-scripts", "config", CONFIG_FILENAME)
         load_file(CONFIG_FILENAME)
     # Check that the config defined everything, and if not, fill in default
     # values

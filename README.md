@@ -81,7 +81,6 @@ The above is for Linux. On Windows it will look more like:
 ```json
 {
   "project_name": "Project",
-  "project_name": "Project",
   "repo_path": ".",
   "vivado_path": "C:/Xilinx/Vivado/{vivado_version}/bin/vivado",
   "vivado_version": "2019.1",
